@@ -3,60 +3,45 @@ function Alumno(nombre, apellidos, edad) {
     this.apellidos = apellidos;
     this.edad = edad;
     this.materias = [];
-    this.calificaciones = [];
-    this.nivelIngles = '';
+    this.calificaciones = {};
 }
-
-document.getElementById('formAlumno').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre').value;
-    const apellidos = document.getElementById('apellidos').value;
-    const edad = document.getElementById('edad').value;
-    const alumno = new Alumno(nombre, apellidos, edad);
-    // Aquí deberías agregar código para almacenar el alumno en localStorage
-});
 
 Alumno.prototype.inscribirMateria = function(materia) {
-    this.materias.push(materia);
+    if (!this.materias.includes(materia)) {
+        this.materias.push(materia);
+        this.calificaciones[materia] = [];
+    }
 };
 
-Alumno.prototype.asignarCalificacion = function(materia, calificacion) {
-    this.calificaciones.push({ materia, calificacion });
+Alumno.prototype.agregarCalificacion = function(materia, calificacion) {
+    if (this.materias.includes(materia)) {
+        this.calificaciones[materia].push(calificacion);
+    }
 };
 
-let grupoA = [];
-// Para asignar un alumno al grupo, simplemente lo agregas al arreglo.
-grupoA.push(alumno);
+var alumnos = []; // Este arreglo almacenará los objetos Alumno
 
-function buscarPorNombre(nombre, grupo) {
-    return grupo.filter(alumno => alumno.nombre === nombre);
-}
-
-function obtenerPromedioAlumno(alumno) {
-    const suma = alumno.calificaciones.reduce((acc, curr) => acc + curr.calificacion, 0);
-    return suma / alumno.calificaciones.length;
-}
-
-function obtenerPromedioGrupo(grupo) {
-    const sumaTotal = grupo.reduce((acc, alumno) => acc + obtenerPromedioAlumno(alumno), 0);
-    return sumaTotal / grupo.length;
-}
-
-// Esta función ordena a los alumnos por calificación, asumiendo una calificación promedio por alumno
-function ordenarAlumnosPorCalificacion(grupo, ascendente=true) {
-    return grupo.sort((a, b) => {
-        const promedioA = obtenerPromedioAlumno(a);
-        const promedioB = obtenerPromedioAlumno(b);
-        return ascendente ? promedioA - promedioB : promedioB - promedioA;
+function mostrarAlumnos() {
+    const lista = document.getElementById('listaAlumnos');
+    lista.innerHTML = ''; // Limpiar la lista antes de volver a mostrarla
+    alumnos.forEach(alumno => {
+        const elemento = document.createElement('div');
+        elemento.innerHTML = `Nombre: ${alumno.nombre} <br> Apellidos: ${alumno.apellidos} <br> Edad: ${alumno.edad}`;
+        lista.appendChild(elemento);
     });
 }
 
-function guardarAlumno(alumno) {
-    let alumnos = JSON.parse(localStorage.getItem('alumnos') || '[]');
-    alumnos.push(alumno);
-    localStorage.setItem('alumnos', JSON.stringify(alumnos));
-}
-
-function cargarAlumnos() {
-    return JSON.parse(localStorage.getItem('alumnos') || '[]');
-}
+document.getElementById('registroAlumno').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+    // Obtener los valores del formulario
+    const nombre = document.getElementById('nombre').value;
+    const apellidos = document.getElementById('apellidos').value;
+    const edad = document.getElementById('edad').value;
+    // Crear un nuevo alumno y agregarlo al arreglo
+    const nuevoAlumno = new Alumno(nombre, apellidos, parseInt(edad));
+    alumnos.push(nuevoAlumno);
+    // Mostrar los alumnos actualizados
+    mostrarAlumnos();
+    // Limpiar el formulario
+    e.target.reset();
+});
