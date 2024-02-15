@@ -149,3 +149,7 @@ class Alumno {
       listaAlumnos.appendChild(item);
     });
   }
+
+  function mostrarTodosLosAlumnos() {
+    actualizarListaAlumnos(); 
+  }
