@@ -118,7 +118,7 @@ class Alumno {
   
     mostrarInformacion(alumnoIndex);
   }
-
+  
   function buscarAlumno() {
     const busqueda = prompt("Ingrese el nombre o apellido del alumno a buscar:").toLowerCase();
     const resultadosBusqueda = alumnos.filter(alumno => 
@@ -149,7 +149,7 @@ class Alumno {
       listaAlumnos.appendChild(item);
     });
   }
-
+  
   function mostrarTodosLosAlumnos() {
     actualizarListaAlumnos(); 
   }
